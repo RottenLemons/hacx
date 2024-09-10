@@ -89,6 +89,9 @@ public class Culprit : MonoBehaviour
         if (!go)
             return;
 
+
+        // Update algo to update angle 
+
         if (go.GetComponent<Rigidbody>().isKinematic)
         {
             if (go.transform.position.y > targets[currTarget].transform.position.y)
@@ -137,9 +140,9 @@ public class Culprit : MonoBehaviour
 
         Vector3 dir = targets[currTarget].transform.position - ShootPosition.position;
 
-        targetRotation = Quaternion.LookRotation(dir);
+        targetRotation = Quaternion.LookRotation(dir); // Causes rotation such that it points at window
 
-        angle = transform.rotation.eulerAngles.x;
+        angle = transform.rotation.eulerAngles.x; 
         launchAngleMin = angle;
         ShootPosition.rotation = targetRotation;
 

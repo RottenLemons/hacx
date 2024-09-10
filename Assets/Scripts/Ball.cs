@@ -36,7 +36,7 @@ public class Ball : MonoBehaviour
         volume = (4 * Mathf.PI * r * r * r) / 3;
         rbody.mass =( density * volume); // in grams
        
-        area = 2 * Mathf.PI * r * r;
+        area = Mathf.PI * r * r;
 
         initialVel = SettingsMenu.instance.GetInitVel();
         force = rbody.mass * initialVel;
@@ -89,6 +89,7 @@ public class Ball : MonoBehaviour
 
 
         Vector3 dragForce = -0.5f * (p * rbody.velocity.sqrMagnitude * dragCoefficient * area * rbody.velocity.normalized);
+        // WEE ZEN CHANGE THIS BASED ON RESEARCH
         rbody.AddForce(dragForce, ForceMode.Force);
 
         // Calculate the relative velocity of the ball with respect to the wind
@@ -223,5 +224,5 @@ public class Ball : MonoBehaviour
             HB.Hitposition = transform.position;
             MainGameManager.instance.AddNewHitRegistryToList(HB);
         }
-    }
+    } // Is this not double counting?
 }
