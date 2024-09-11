@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static UnityEditor.PlayerSettings;
 using static UnityEngine.GraphicsBuffer;
 
 public class MainGameManager : MonoBehaviour
@@ -27,6 +29,7 @@ public class MainGameManager : MonoBehaviour
 
     [Header("window")]
     public Camera MCam;
+    public TMP_Text x_num, y_num;
     public Color SelectHighlightColor = Color.green;
     public Color selectedColor = Color.red;
     public Color DeselectHighlightColor;
@@ -54,6 +57,8 @@ public class MainGameManager : MonoBehaviour
     bool isToggled = false;
     public CalcTrajectory CT;
     public TMP_Text highestAcc;
+    private bool choosing = false;
+    public GameObject posPicker;
 
     public WeightSettingsManager WSM;
 
@@ -88,6 +93,7 @@ public class MainGameManager : MonoBehaviour
         CT.CleanUp();
         PostResultsUIGO.SetActive(false);
         RefreshItemTransparency();
+        posPicker.transform.position = new Vector3(0, posPicker.transform.position.y, 0);
 
         // Start the next game
         StartGame();
@@ -146,6 +152,7 @@ public class MainGameManager : MonoBehaviour
         CameraAnimator.CrossFade(CameraToMainGameTransition.name, TransitionSpeed);
         MainMenuUI.SetActive(false);
         MainGameUI.SetActive(true);
+        choosing = true;
     }
 
     public void QuitApplication()
@@ -170,8 +177,23 @@ public class MainGameManager : MonoBehaviour
     {
         Ray ray = MCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+        if (choosing)
+        {
+            Vector3 init = Input.mousePosition;
+            init.z = 45;
+            Vector3 pos = Camera.main.ScreenToWorldPoint(init);
+            x_num.text = Mathf.Abs(pos.x - 46.565f).ToSafeString();
+            y_num.text = Mathf.Abs(pos.z + 45.28f).ToSafeString();
 
-        if (Physics.Raycast(ray, out hit))
+            if (Input.GetMouseButtonDown(0))
+            {
+                posPicker.transform.position = new Vector3(pos.x, posPicker.transform.position.y, pos.z);
+                SimButton.SetActive(true);
+                choosing = false;
+            }
+        }
+
+        /*if (Physics.Raycast(ray, out hit))
         {
             GameObject hitObject = hit.collider.gameObject;
 
@@ -216,7 +238,7 @@ public class MainGameManager : MonoBehaviour
                 SelectedWindows.Remove(currentlyHoveredWindow);
                 return;
             }
-        }
+        }*/
       
     }
     public void StartRealTime()
