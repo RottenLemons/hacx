@@ -24,8 +24,10 @@ public class MainGameManager : MonoBehaviour
     public GameObject MainMenuUI;
     [Header("MainGameUI")]
     public GameObject MainGameUI;
+    public GameObject DrawUI;
     public GameObject SimButton;
     public GameObject BackButton;
+    public GameObject DrawButton;
 
     [Header("window")]
     public Camera MCam;
@@ -36,6 +38,8 @@ public class MainGameManager : MonoBehaviour
     public Material OriginalWindowMaterial;
     private Window currentlyHoveredWindow;
     private List<Window> SelectedWindows = new List<Window>();
+    public TMP_Text heightT, widthT, angleT;
+    public Slider heightS, widthS, angleS;
 
     [Header("Positions")]
     public List<Vector3> CulpritPositions = new List<Vector3>();
@@ -94,7 +98,7 @@ public class MainGameManager : MonoBehaviour
         PostResultsUIGO.SetActive(false);
         RefreshItemTransparency();
         posPicker.transform.position = new Vector3(0, posPicker.transform.position.y, 0);
-
+        posPicker.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
         // Start the next game
         StartGame();
         ResetWholeScene();
@@ -166,6 +170,11 @@ public class MainGameManager : MonoBehaviour
         {
             ResetWindowColor(GO.gameObject);
         }
+        BackButton.SetActive(false);
+        posPicker.transform.position = new Vector3(0, posPicker.transform.position.y, 0);
+        posPicker.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+        choosing = false;
+
         SelectedWindows.Clear();
     }
     public void TransitionToSettings()
@@ -188,7 +197,7 @@ public class MainGameManager : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 posPicker.transform.position = new Vector3(pos.x, posPicker.transform.position.y, pos.z);
-                SimButton.SetActive(true);
+                DrawButton.SetActive(true);
                 choosing = false;
             }
         }
@@ -212,15 +221,15 @@ public class MainGameManager : MonoBehaviour
             }
             else if (currentlyHoveredWindow)
             {
-                if(!currentlyHoveredWindow.isSelected) ResetWindowColor(currentlyHoveredWindow.gameObject);
+                if (!currentlyHoveredWindow.isSelected) ResetWindowColor(currentlyHoveredWindow.gameObject);
                 currentlyHoveredWindow = null;
             }
 
         }
 
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            if(currentlyHoveredWindow && !currentlyHoveredWindow.isSelected && SelectedWindows.Count < 2)
+            if (currentlyHoveredWindow && !currentlyHoveredWindow.isSelected && SelectedWindows.Count < 2)
             {
                 currentlyHoveredWindow.isSelected = true;
                 currentlyHoveredWindow.GetComponent<Renderer>().material.color = selectedColor;
@@ -231,7 +240,7 @@ public class MainGameManager : MonoBehaviour
                 }
                 return;
             }
-            else if(currentlyHoveredWindow && currentlyHoveredWindow.isSelected)
+            else if (currentlyHoveredWindow && currentlyHoveredWindow.isSelected)
             {
                 currentlyHoveredWindow.isSelected = false;
                 ResetWindowColor(currentlyHoveredWindow.gameObject);
@@ -239,7 +248,7 @@ public class MainGameManager : MonoBehaviour
                 return;
             }
         }*/
-      
+
     }
     public void StartRealTime()
     {
@@ -437,8 +446,24 @@ public class MainGameManager : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void OnChangeHeightSlider()
+    {
+        heightT.text = heightS.value.ToString();
+        posPicker.transform.localScale = new Vector3(posPicker.transform.localScale.x, heightS.value, posPicker.transform.localScale.z);
+    }
 
+    public void OnChangeWidthSlider()
+    {
+        widthT.text = widthS.value.ToString();
+        posPicker.transform.localScale = new Vector3(widthS.value, posPicker.transform.localScale.y, posPicker.transform.localScale.z);
+    }
 
+    public void OnChangeAngleSlider()
+    {
+        angleT.text = angleS.value.ToString();
+        Debug.Log(posPicker.transform.rotation);
+        posPicker.transform.rotation = Quaternion.Euler(new Vector3(90, 0, angleS.value));
+    }
 }
 
 [System.Serializable]
