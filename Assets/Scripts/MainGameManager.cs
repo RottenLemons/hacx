@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static UnityEditor.PlayerSettings;
 using static UnityEngine.GraphicsBuffer;
 
 public class MainGameManager : MonoBehaviour
@@ -22,17 +24,22 @@ public class MainGameManager : MonoBehaviour
     public GameObject MainMenuUI;
     [Header("MainGameUI")]
     public GameObject MainGameUI;
+    public GameObject DrawUI;
     public GameObject SimButton;
     public GameObject BackButton;
+    public GameObject DrawButton;
 
     [Header("window")]
     public Camera MCam;
+    public TMP_Text x_num, y_num;
     public Color SelectHighlightColor = Color.green;
     public Color selectedColor = Color.red;
     public Color DeselectHighlightColor;
     public Material OriginalWindowMaterial;
     private Window currentlyHoveredWindow;
     private List<Window> SelectedWindows = new List<Window>();
+    public TMP_Text heightT, widthT, angleT;
+    public Slider heightS, widthS, angleS;
 
     [Header("Positions")]
     public List<Vector3> CulpritPositions = new List<Vector3>();
@@ -54,6 +61,8 @@ public class MainGameManager : MonoBehaviour
     bool isToggled = false;
     public CalcTrajectory CT;
     public TMP_Text highestAcc;
+    private bool choosing = false;
+    public GameObject posPicker;
 
     public WeightSettingsManager WSM;
 
@@ -88,7 +97,8 @@ public class MainGameManager : MonoBehaviour
         CT.CleanUp();
         PostResultsUIGO.SetActive(false);
         RefreshItemTransparency();
-
+        posPicker.transform.position = new Vector3(0, posPicker.transform.position.y, 0);
+        posPicker.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
         // Start the next game
         StartGame();
         ResetWholeScene();
@@ -146,6 +156,7 @@ public class MainGameManager : MonoBehaviour
         CameraAnimator.CrossFade(CameraToMainGameTransition.name, TransitionSpeed);
         MainMenuUI.SetActive(false);
         MainGameUI.SetActive(true);
+        choosing = true;
     }
 
     public void QuitApplication()
@@ -159,6 +170,11 @@ public class MainGameManager : MonoBehaviour
         {
             ResetWindowColor(GO.gameObject);
         }
+        BackButton.SetActive(false);
+        posPicker.transform.position = new Vector3(0, posPicker.transform.position.y, 0);
+        posPicker.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+        choosing = false;
+
         SelectedWindows.Clear();
     }
     public void TransitionToSettings()
@@ -170,8 +186,23 @@ public class MainGameManager : MonoBehaviour
     {
         Ray ray = MCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+        if (choosing)
+        {
+            Vector3 init = Input.mousePosition;
+            init.z = 45;
+            Vector3 pos = Camera.main.ScreenToWorldPoint(init);
+            x_num.text = Mathf.Abs(pos.x - 46.565f).ToSafeString();
+            y_num.text = Mathf.Abs(pos.z + 45.28f).ToSafeString();
 
-        if (Physics.Raycast(ray, out hit))
+            if (Input.GetMouseButtonDown(0))
+            {
+                posPicker.transform.position = new Vector3(pos.x, posPicker.transform.position.y, pos.z);
+                DrawButton.SetActive(true);
+                choosing = false;
+            }
+        }
+
+        /*if (Physics.Raycast(ray, out hit))
         {
             GameObject hitObject = hit.collider.gameObject;
 
@@ -190,15 +221,15 @@ public class MainGameManager : MonoBehaviour
             }
             else if (currentlyHoveredWindow)
             {
-                if(!currentlyHoveredWindow.isSelected) ResetWindowColor(currentlyHoveredWindow.gameObject);
+                if (!currentlyHoveredWindow.isSelected) ResetWindowColor(currentlyHoveredWindow.gameObject);
                 currentlyHoveredWindow = null;
             }
 
         }
 
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            if(currentlyHoveredWindow && !currentlyHoveredWindow.isSelected && SelectedWindows.Count < 2)
+            if (currentlyHoveredWindow && !currentlyHoveredWindow.isSelected && SelectedWindows.Count < 2)
             {
                 currentlyHoveredWindow.isSelected = true;
                 currentlyHoveredWindow.GetComponent<Renderer>().material.color = selectedColor;
@@ -209,15 +240,15 @@ public class MainGameManager : MonoBehaviour
                 }
                 return;
             }
-            else if(currentlyHoveredWindow && currentlyHoveredWindow.isSelected)
+            else if (currentlyHoveredWindow && currentlyHoveredWindow.isSelected)
             {
                 currentlyHoveredWindow.isSelected = false;
                 ResetWindowColor(currentlyHoveredWindow.gameObject);
                 SelectedWindows.Remove(currentlyHoveredWindow);
                 return;
             }
-        }
-      
+        }*/
+
     }
     public void StartRealTime()
     {
@@ -415,8 +446,24 @@ public class MainGameManager : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void OnChangeHeightSlider()
+    {
+        heightT.text = heightS.value.ToString();
+        posPicker.transform.localScale = new Vector3(posPicker.transform.localScale.x, heightS.value, posPicker.transform.localScale.z);
+    }
 
+    public void OnChangeWidthSlider()
+    {
+        widthT.text = widthS.value.ToString();
+        posPicker.transform.localScale = new Vector3(widthS.value, posPicker.transform.localScale.y, posPicker.transform.localScale.z);
+    }
 
+    public void OnChangeAngleSlider()
+    {
+        angleT.text = angleS.value.ToString();
+        Debug.Log(posPicker.transform.rotation);
+        posPicker.transform.rotation = Quaternion.Euler(new Vector3(90, 0, angleS.value));
+    }
 }
 
 [System.Serializable]
