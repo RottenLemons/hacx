@@ -6,13 +6,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using static UnityEditor.PlayerSettings;
 using static UnityEngine.GraphicsBuffer;
+using static UnityEngine.Rendering.DebugUI;
 
 public class MainGameManager : MonoBehaviour
 {
     public static MainGameManager instance;
 
+    public GameObject spawnArea;
     [Header("Controllers")]
     public Animator CameraAnimator;
     public AnimationClip CameraToMainGameTransition;
@@ -31,7 +34,7 @@ public class MainGameManager : MonoBehaviour
 
     [Header("window")]
     public Camera MCam;
-    public TMP_Text x_num, y_num;
+    public TMP_InputField x_num, y_num;
     public Color SelectHighlightColor = Color.green;
     public Color selectedColor = Color.red;
     public Color DeselectHighlightColor;
@@ -39,7 +42,7 @@ public class MainGameManager : MonoBehaviour
     private Window currentlyHoveredWindow;
     private List<Window> SelectedWindows = new List<Window>();
     public TMP_Text heightT, widthT, angleT;
-    public Slider heightS, widthS, angleS;
+    public UnityEngine.UI.Slider heightS, widthS, angleS;
 
     [Header("Positions")]
     public List<Vector3> CulpritPositions = new List<Vector3>();
@@ -50,10 +53,10 @@ public class MainGameManager : MonoBehaviour
     public List<HitBall> RegisteredHitsOnBothWindows = new List<HitBall>();
 
     [Header("UI Related")]
-    public Button ChangeWindowDisplay;
+    public UnityEngine.UI.Button ChangeWindowDisplay;
     public int WindowDisplayOption = 2;
     public TMP_Text DisplayingCulpritText;
-    public Toggle ToggleHeatMap, ToggleAccuracy;
+    public UnityEngine.UI.Toggle ToggleHeatMap, ToggleAccuracy;
     public GameObject PostResultsUIGO;
 
     [Header("PostClaculationSettings")]
@@ -139,10 +142,37 @@ public class MainGameManager : MonoBehaviour
         if (!instance)
         {
             instance = this;
+            x_num.onEndEdit.AddListener(OnInputFieldValueChanged);
+            y_num.onEndEdit.AddListener(OnInputFieldValueChanged2);
+            for (int i = 1; i <= 23; i++)
+            {
+                GameObject duplicatedObject = Instantiate(spawnArea);
+                duplicatedObject.transform.position += i * new Vector3(0, 3.6f, 0);
+            }
         }
         else
             Destroy(this);
 
+    }
+
+    void OnInputFieldValueChanged(string value)
+    {
+        // Try to parse the Input Field value as a float
+        if (float.TryParse(value, out float newValue))
+        {
+            // Update Slider if the Input Field value is valid
+            posPicker.transform.position = new Vector3(-newValue + 50.0f, posPicker.transform.position.y, posPicker.transform.position.z);
+        }
+    }
+
+    void OnInputFieldValueChanged2(string value)
+    {
+        // Try to parse the Input Field value as a float
+        if (float.TryParse(value, out float newValue))
+        {
+            // Update Slider if the Input Field value is valid
+            posPicker.transform.position = new Vector3(posPicker.transform.position.x, posPicker.transform.position.y, -newValue - 10.5f);
+        }
     }
 
     public void SwapToCamOverview()
@@ -186,19 +216,19 @@ public class MainGameManager : MonoBehaviour
     {
         Ray ray = MCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (choosing)
+        if (choosing && Physics.Raycast(ray, out hit))
         {
+            if (!hit.collider.gameObject.CompareTag("Hitzone")) { return; }
             Vector3 init = Input.mousePosition;
-            init.z = 45;
+            init.z = 50;
             Vector3 pos = Camera.main.ScreenToWorldPoint(init);
-            x_num.text = Mathf.Abs(pos.x - 46.565f).ToSafeString();
-            y_num.text = Mathf.Abs(pos.z + 45.28f).ToSafeString();
+            x_num.text = (-pos.x + 50f).ToSafeString();
+            y_num.text = (-pos.z - 10.5f).ToSafeString();
 
             if (Input.GetMouseButtonDown(0))
             {
                 posPicker.transform.position = new Vector3(pos.x, posPicker.transform.position.y, pos.z);
                 DrawButton.SetActive(true);
-                choosing = false;
             }
         }
 
@@ -250,6 +280,12 @@ public class MainGameManager : MonoBehaviour
         }*/
 
     }
+
+    public void resetChoosing()
+    {
+        choosing = !choosing;
+    }
+
     public void StartRealTime()
     {
         MainGameUI.SetActive(false);
@@ -442,8 +478,8 @@ public class MainGameManager : MonoBehaviour
 
     public void EnableFreeCam()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
     }
 
     public void OnChangeHeightSlider()
