@@ -553,10 +553,13 @@ public class HitBall
     public void CalculateAccuracy()
     {
         Culprit shooter = RelatedHumanGameObject.GetComponent<Culprit>();
-/*        if (WindowHit == 0)
-        {*/
-            //Accuracy = DistanceFromCenterW1;
-            Accuracy = 100 * ((((90 - shooter.angle1) / 90) + (shooter.hitSpeed1 / SettingsMenu.instance.GetInitVel())) * 0.5f);
+        /*        if (WindowHit == 0)
+                {*/
+        //Accuracy = DistanceFromCenterW1;
+        float width = shooter.hitSpeed1 * (float) Math.Sin(90 - shooter.angles.x) * 0.1f;
+        float height = shooter.hitSpeed1 * (float)Math.Cos(90 - shooter.angles.x) * 0.1f + shooter.hitSpeed1 * (float)Math.Sin(90 - shooter.angles.x) * 0.1f;
+        float angle = 180 - shooter.angles.y;
+        Accuracy = 5 / Mathf.Max(0.2f, DistanceFromCenterW1 / 5) + 5 / Math.Max(0.2f, Math.Abs(width - MainGameManager.instance.posPicker.transform.localScale.z) / 5) + 5 / Math.Max(0.2f, Math.Abs(height - MainGameManager.instance.posPicker.transform.localScale.x) / 5) + 5 / Math.Max(0.2f, Math.Abs(angle - MainGameManager.instance.posPicker.transform.rotation.z) / 5);
         Debug.Log(Accuracy);
         /*}
         else if(WindowHit == 1)

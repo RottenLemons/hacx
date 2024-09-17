@@ -63,14 +63,12 @@ public class CalcTrajectory : MonoBehaviour
             {
                 SetCanShoot(ViableCulprits1);
                 currIter1++;
-                iter1.text = "1st Window: " + currIter1;
+                iter1.text = "Iterations: " + currIter1;
             }
         }
 
         if (CheckIsWindowDone(ViableCulprits1) && launch1)
-        {
-            LaunchBalls(ViableCulprits2);
-            
+        {            
             launch1 = false;
             StartCoroutine(DelayedSortingOfCulprits());
         }

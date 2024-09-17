@@ -71,7 +71,14 @@ public class Culprit : MonoBehaviour
 /*            Debug.Log("a");
 */            return;
         }
-            
+
+        if (done && go.GetComponent<Rigidbody>().isKinematic)
+        {
+            travelling = false;
+            fDone = true;
+            return;
+        }
+
 
         if (iterations1 >= maxIterations)
         {
@@ -112,8 +119,6 @@ public class Culprit : MonoBehaviour
         {
             return;
         }
-            
-
 
         // Update algo to update angle 
 

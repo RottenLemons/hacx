@@ -166,7 +166,9 @@ public class Ball : MonoBehaviour
             HB.WindowHit = target;
             HB.DistanceFromCenterW1 = Vector3.Distance(transform.position, MainGameManager.instance.posPicker.transform.position);
             shooter.angle1 = Vector3.Angle(vel, -normal);
-            shooter.angles = new Vector3(AngleWithPlane(vel, Vector3.up), AngleWithPlane(vel, Vector3.right), AngleWithPlane(vel, Vector3.forward));
+            Debug.Log(vel);
+            shooter.angles = Quaternion.LookRotation(vel).eulerAngles;
+            Debug.Log(shooter.angles);
             shooter.hitSpeed1 = vel.magnitude;
             
             HB.CalculateAccuracy();
