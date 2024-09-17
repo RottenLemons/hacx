@@ -27,12 +27,12 @@ public class AreaSplitManager : MonoBehaviour
         Vector3 boxSize = GetComponent<Renderer>().bounds.size;
         float areaWidth = boxSize.x / numberOfAreas;
         int s = 1;
+        
         for (int i = 0; i < numberOfAreas; i++)
         {
 
             float spawnPositionX = transform.position.x - (boxSize.x / 2) + (areaWidth * i) + (areaWidth / 2);
             Vector3 spawnPosition = new Vector3(spawnPositionX, transform.position.y, transform.position.z);
-            
             if (!CheckCollision(spawnPosition))
             {
                 GameObject GO =Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
@@ -43,6 +43,7 @@ public class AreaSplitManager : MonoBehaviour
                 culprit.row = row;
                 s++;
                 mainGameManager.CulpritPositions.Add(culprit.ShootPosition.position);
+
             }
         }
     }

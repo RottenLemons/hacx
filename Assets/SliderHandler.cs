@@ -12,13 +12,11 @@ public class SliderHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public SettingsMenu menu;
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Mouse entered slider");
         YourVoidFunction();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("Mouse exited slider");
     }
 
     // Define your void function here

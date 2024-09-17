@@ -41,7 +41,7 @@ public class MainGameManager : MonoBehaviour
     public Material OriginalWindowMaterial;
     private Window currentlyHoveredWindow;
     private List<Window> SelectedWindows = new List<Window>();
-    public TMP_Text heightT, widthT, angleT;
+    public TMP_InputField heightT, widthT, angleT;
     public UnityEngine.UI.Slider heightS, widthS, angleS;
 
     [Header("Positions")]
@@ -144,6 +144,9 @@ public class MainGameManager : MonoBehaviour
             instance = this;
             x_num.onEndEdit.AddListener(OnInputFieldValueChanged);
             y_num.onEndEdit.AddListener(OnInputFieldValueChanged2);
+            heightT.onEndEdit.AddListener(OnInputFieldValueChanged3);
+            widthT.onEndEdit.AddListener(OnInputFieldValueChanged4);
+            angleT.onEndEdit.AddListener(OnInputFieldValueChanged5);
             for (int i = 1; i <= 23; i++)
             {
                 GameObject duplicatedObject = Instantiate(spawnArea);
@@ -173,6 +176,58 @@ public class MainGameManager : MonoBehaviour
             // Update Slider if the Input Field value is valid
             posPicker.transform.position = new Vector3(posPicker.transform.position.x, posPicker.transform.position.y, -newValue - 10.5f);
         }
+    }
+
+    void OnInputFieldValueChanged3(string value)
+    {
+        // Try to parse the Input Field value as a float
+        if (float.TryParse(value, out float newValue))
+        {
+            // Update Slider if the Input Field value is valid
+            heightS.value = newValue;
+            posPicker.transform.localScale = new Vector3(posPicker.transform.localScale.x, newValue, posPicker.transform.localScale.z);
+
+        }
+    }
+
+    void OnInputFieldValueChanged4(string value)
+    {
+        // Try to parse the Input Field value as a float
+        if (float.TryParse(value, out float newValue))
+        {
+            // Update Slider if the Input Field value is valid
+            widthS.value = newValue;
+            posPicker.transform.localScale = new Vector3(newValue, posPicker.transform.localScale.y, posPicker.transform.localScale.z);
+        }
+    }
+
+    void OnInputFieldValueChanged5(string value)
+    {
+        // Try to parse the Input Field value as a float
+        if (float.TryParse(value, out float newValue))
+        {
+            // Update Slider if the Input Field value is valid
+            angleS.value = newValue;
+            posPicker.transform.rotation = Quaternion.Euler(new Vector3(90, 0, newValue));
+        }
+    }
+
+    public void OnChangeHeightSlider()
+    {
+        heightT.text = heightS.value.ToString();
+        posPicker.transform.localScale = new Vector3(posPicker.transform.localScale.x, heightS.value, posPicker.transform.localScale.z);
+    }
+
+    public void OnChangeWidthSlider()
+    {
+        widthT.text = widthS.value.ToString();
+        posPicker.transform.localScale = new Vector3(widthS.value, posPicker.transform.localScale.y, posPicker.transform.localScale.z);
+    }
+
+    public void OnChangeAngleSlider()
+    {
+        angleT.text = angleS.value.ToString();
+        posPicker.transform.rotation = Quaternion.Euler(new Vector3(90, 0, angleS.value));
     }
 
     public void SwapToCamOverview()
@@ -289,6 +344,7 @@ public class MainGameManager : MonoBehaviour
     public void StartRealTime()
     {
         MainGameUI.SetActive(false);
+        DrawUI.SetActive(false);
         gameObject.GetComponent<CalcTrajectory>().CalculatePath();
     }
     void ResetWindowColor(GameObject window)
@@ -481,25 +537,6 @@ public class MainGameManager : MonoBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false;
     }
-
-    public void OnChangeHeightSlider()
-    {
-        heightT.text = heightS.value.ToString();
-        posPicker.transform.localScale = new Vector3(posPicker.transform.localScale.x, heightS.value, posPicker.transform.localScale.z);
-    }
-
-    public void OnChangeWidthSlider()
-    {
-        widthT.text = widthS.value.ToString();
-        posPicker.transform.localScale = new Vector3(widthS.value, posPicker.transform.localScale.y, posPicker.transform.localScale.z);
-    }
-
-    public void OnChangeAngleSlider()
-    {
-        angleT.text = angleS.value.ToString();
-        Debug.Log(posPicker.transform.rotation);
-        posPicker.transform.rotation = Quaternion.Euler(new Vector3(90, 0, angleS.value));
-    }
 }
 
 [System.Serializable]
@@ -516,11 +553,12 @@ public class HitBall
     public void CalculateAccuracy()
     {
         Culprit shooter = RelatedHumanGameObject.GetComponent<Culprit>();
-        if (WindowHit == 0)
-        {
+/*        if (WindowHit == 0)
+        {*/
             //Accuracy = DistanceFromCenterW1;
             Accuracy = 100 * ((((90 - shooter.angle1) / 90) + (shooter.hitSpeed1 / SettingsMenu.instance.GetInitVel())) * 0.5f);
-        }
+        Debug.Log(Accuracy);
+        /*}
         else if(WindowHit == 1)
         {
             //Accuracy = DistanceFromCenterW2;
@@ -534,7 +572,7 @@ public class HitBall
             float window2 = ((((90 - shooter.angle2)*WeightSettingsManager.instance.AOIWeight) / 90) + ((shooter.hitSpeed2 * WeightSettingsManager.instance.VOIWeight) / SettingsMenu.instance.GetInitVel())) * 0.5f;
             //Debug.Log(window1 + " " + window2);
             Accuracy = ((window1 + window2) * 0.5f) * 100;
-        }
+        }*/
 
         RelatedHumanGameObject.GetComponent<Culprit>().AccuracyText.text = Accuracy.ToString("F1");
     }

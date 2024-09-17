@@ -13,6 +13,7 @@ public class Ball : MonoBehaviour
     public float volume = 0;
     public float initialVel = 70f; // m/s
     private float force;
+    public float mass;
     float distToGround;
     public float r;
     float p = 1.225f; //density of air 1.225kg/m^3
@@ -21,20 +22,28 @@ public class Ball : MonoBehaviour
     public Material window2;
     private int target;
     Vector3 vel;
-    private List<Window> targets;
+    public bool final = false;
+
+/*    public void Setup(float velocity, float mass, float dragCoefficient)
+    {
+        this.initialVel = velocity;
+        this.mass = mass;
+        this.dragCoefficient = dragCoefficient;
+    }*/
+
     void Awake()
     {
         islaunched = true;
-        targets = MainGameManager.instance.GetWindows();
+        
         rbody = GetComponent<Rigidbody>();
         //distToGround = GetComponent<SphereCollider>().bounds.extents.y;
 
-        dragCoefficient = 0.1f;
+        dragCoefficient = SettingsMenu.instance.GetDragCoefficient();
         // get drag coefficient 
 
         r = transform.localScale.y * 0.5f;
         volume = (4 * Mathf.PI * r * r * r) / 3;
-        rbody.mass =( density * volume); // in grams
+        rbody.mass = SettingsMenu.instance.GetMass(); // in grams
        
         area = Mathf.PI * r * r;
 
@@ -108,32 +117,37 @@ public class Ball : MonoBehaviour
         dragCoefficient = newValue;
     }
 
-    public void SetTarget(int tar)
+    public void SetTarget()
     {
-        target = tar;
-        if (target==0)
-        {
-            TrailRenderer window_1 = gameObject.GetComponent<TrailRenderer>();
-            window_1.material = window1;
-        }
-        else
-        {
-            TrailRenderer window_2 = gameObject.GetComponent<TrailRenderer>();
-            window_2.material = window2;
-        }
+       
+        TrailRenderer window_1 = gameObject.GetComponent<TrailRenderer>();
+        window_1.material = window1;
+
     }
+
+    float AngleWithPlane(Vector3 vector, Vector3 planeNormal)
+    {
+        // Calculate the dot product
+        float dotProduct = Vector3.Dot(vector.normalized, planeNormal);
+
+        // Calculate the angle in radians and then convert to degrees
+        float angle = Mathf.Acos(dotProduct) * Mathf.Rad2Deg;
+
+        return angle;
+    }
+
     private void OnCollisionEnter(Collision other)
     {
         Culprit shooter = transform.root.GetComponent<Culprit>();
-        if (other.transform.gameObject != targets[target].transform.gameObject)
+        if (other.transform.gameObject != MainGameManager.instance.posPicker.transform.gameObject)
         {
             shooter.travelling = false;
-            rbody.isKinematic = true;            
+            rbody.isKinematic = true;
         }
         else
         {
             //Vector3 vel = rbody.velocity;
-            Vector3 normal = other.contacts[0].normal;
+           
             shooter.travelling = false;
             rbody.isKinematic = true;
             transform.position = other.contacts[0].point;
@@ -141,31 +155,20 @@ public class Ball : MonoBehaviour
             if (Vector3.Distance(other.contacts[0].point, other.transform.position) > 0.2f)
                 return;
 
-            if (target == 0)
-                shooter.hitWindow1 = true;
 
-            else if (target == 1)
-                shooter.hitWindow2 = true;
-
-
-
+            shooter.hitWindow1 = true;
+        }
+        if (final) {
             //Debug.Log("HIT TARGET: " + target);
-
+            Vector3 normal = other.contacts[0].normal;
             HitBall HB = new HitBall();
             HB.RelatedHumanGameObject = transform.parent.gameObject;
             HB.WindowHit = target;
-            if (target == 0)
-            {
-                HB.DistanceFromCenterW1 = Vector3.Distance(transform.position, targets[target].transform.position);
-                shooter.angle1 = Vector3.Angle(vel, -normal);
-                shooter.hitSpeed1 = vel.magnitude;
-            }
-            else
-            {
-                HB.DistanceFromCenterW2 = Vector3.Distance(transform.position, targets[target].transform.position);
-                shooter.angle2 = Vector3.Angle(vel, -normal);
-                shooter.hitSpeed2 = vel.magnitude;
-            }
+            HB.DistanceFromCenterW1 = Vector3.Distance(transform.position, MainGameManager.instance.posPicker.transform.position);
+            shooter.angle1 = Vector3.Angle(vel, -normal);
+            shooter.angles = new Vector3(AngleWithPlane(vel, Vector3.up), AngleWithPlane(vel, Vector3.right), AngleWithPlane(vel, Vector3.forward));
+            shooter.hitSpeed1 = vel.magnitude;
+            
             HB.CalculateAccuracy();
             HB.Hitposition = transform.position;
             MainGameManager.instance.AddNewHitRegistryToList(HB);
@@ -175,10 +178,9 @@ public class Ball : MonoBehaviour
         if (target == 0 && (shooter.iterations1 < shooter.maxIterations))
             return;
 
-        else if (target == 1 && (shooter.iterations2 < shooter.maxIterations))
-            return;
+       
 
-        if (other.transform.gameObject != targets[target].gameObject)
+        /*if (other.transform.gameObject != targets[target].gameObject)
         {
             shooter.travelling = false;
             rbody.isKinematic = true;
@@ -223,6 +225,6 @@ public class Ball : MonoBehaviour
             HB.CalculateAccuracy();
             HB.Hitposition = transform.position;
             MainGameManager.instance.AddNewHitRegistryToList(HB);
-        }
+        }*/
     } // Is this not double counting?
 }

@@ -14,14 +14,16 @@ public class Culprit : MonoBehaviour
     public bool hitWindow1 = false;
     public bool hitWindow2 = false;
     public bool done = false;
+    public bool fDone = false;
     public bool canShoot = false;
 
-    public float launchAngleMax = 0f;
+    public float launchAngleMax = 90f;
     public float launchAngleMin = -90f;
     public float angle;
+    public float launchAngle;
 
     public float angle1;
-    public float angle2;
+    public Vector3 angles;
 
     public float hitSpeed1;
     public float hitSpeed2;
@@ -29,17 +31,20 @@ public class Culprit : MonoBehaviour
     public int iterations1;
     public int iterations2;
     public int maxIterations;
+    public float dist = Mathf.Infinity;
 
     [Header("RowAndColumn")]
     public int row;
     public int column;
+    
 
     public TMP_Text AccuracyText;
 
-    private List<Window> targets = new List<Window>();
     Quaternion targetRotation;
     GameObject go;
     public GameObject Ball;
+
+    
 
     public void Cleanup()
     {
@@ -50,117 +55,128 @@ public class Culprit : MonoBehaviour
         travelling = false;
         hit = false;
         below = true;
-        targets.Clear();
+        MainGameManager.instance.posPicker.transform.position = new Vector3(0, MainGameManager.instance.posPicker.transform.position.y, 0);
     }
     private void Awake()
     {
         iterations1 = 0;
         iterations2 = 0;
-        maxIterations = 10;
+        maxIterations = 90;
     }
 
     private void Update()
     {
-        if (done || !canShoot)
+        if (fDone || !canShoot)
+        {
+/*            Debug.Log("a");
+*/            return;
+        }
+            
+
+        if (iterations1 >= maxIterations)
+        {
+            done = true;
+
+            Quaternion tiltRotation = Quaternion.Euler(angle, 0, 0);
+            Quaternion finalRotation = targetRotation * tiltRotation;
+            ShootPosition.rotation = finalRotation;
+            Destroy(go);
+            go = Instantiate(Ball, ShootPosition.position, ShootPosition.rotation, ShootPosition.root);
+            go.GetComponent<Ball>().SetTarget();
+            go.GetComponent<Ball>().final = true;
+            travelling = true;
+            canShoot = false;
+            return;
+        }
+
+
+        if (hitWindow1)
+        {
+            done = true;
+            angle = launchAngle;
+
+            Quaternion tiltRotation = Quaternion.Euler(angle, 0, 0);
+            Quaternion finalRotation = targetRotation * tiltRotation;
+            ShootPosition.rotation = finalRotation;
+            Destroy(go);
+            go = Instantiate(Ball, ShootPosition.position, ShootPosition.rotation, ShootPosition.root);
+            go.GetComponent<Ball>().SetTarget();
+            go.GetComponent<Ball>().final = true;
+            travelling = true;
+            canShoot = false;
             return;
 
-        if (currTarget == 0)
-        {
-            if (iterations1 >= maxIterations)
-                return;
-
-            if (hitWindow1)
-                return;
-        }
-        else if (currTarget == 1)
-        {
-            if (iterations2 >= maxIterations)
-            {
-                done = true;
-                return;
-            }
-            if (hitWindow2)
-            {
-                done = true;
-                return;
-            }
         }
 
         if (!go)
+        {
             return;
+        }
+            
 
 
         // Update algo to update angle 
 
         if (go.GetComponent<Rigidbody>().isKinematic)
         {
-            if (go.transform.position.y > targets[currTarget].transform.position.y)
+            /*if ((go.transform.position.x < MainGameManager.instance.posPicker.transform.position.x || go.transform.position.z < MainGameManager.instance.posPicker.transform.position.z))
             {
                 launchAngleMax = angle;
             }
-            else if(go.transform.position.y < targets[currTarget].transform.position.y)
+            else if(go.transform.position.x > MainGameManager.instance.posPicker.transform.position.x || go.transform.position.z > MainGameManager.instance.posPicker.transform.position.z)
             {
                 launchAngleMin = angle;
             }
           
-            angle = (launchAngleMin + launchAngleMax) * 0.5f;
+            angle = (launchAngleMin + launchAngleMax) * 0.5f;*/
             //Debug.Log(angle + " " + launchAngleMin + " " + launchAngleMax);
-            Quaternion tiltRotation = Quaternion.Euler(angle, 0, 0);
+            if (iterations1 > 0)
+            {
+                if (Vector3.Distance(go.transform.position, MainGameManager.instance.posPicker.transform.position) < dist)
+                {
+                    dist = Vector3.Distance(go.transform.position, MainGameManager.instance.posPicker.transform.position);
+                    angle = launchAngle;
+                }
+            }
+
+            launchAngle = iterations1 * (launchAngleMax - launchAngleMin) / maxIterations;
+    
+            Quaternion tiltRotation = Quaternion.Euler(launchAngle, 0, 0);
             Quaternion finalRotation = targetRotation * tiltRotation;
             ShootPosition.rotation = finalRotation;
             Destroy(go);
             go = Instantiate(Ball, ShootPosition.position, ShootPosition.rotation, ShootPosition.root);
-            go.GetComponent<Ball>().SetTarget(currTarget);
+            go.GetComponent<Ball>().SetTarget();
             travelling = true;
             canShoot = false;
 
-            switch (currTarget)
-            {
-                case 0:
-                    iterations1++;
-                    break;
-                case 1:
-                    iterations2++;
-                    break;
-                default:
-                    break;
-            }
+            iterations1++;
         }
     }
 
-    public void FireProjectileAt(int window)
+    public void FireProjectileAt()
     {
         maxIterations = SettingsMenu.instance.GetMaxIterations();
 
-        targets = MainGameManager.instance.GetWindows();
+ /*       targets = MainGameManager.instance.GetWindows();*/
 
         launchAngleMax = -90f;
  
-        currTarget = window;
+/*        currTarget = MainGameManager.instance.posPicker;*/
 
-        Vector3 dir = targets[currTarget].transform.position - ShootPosition.position;
+        Vector3 dir = MainGameManager.instance.posPicker.transform.position - ShootPosition.position;
 
         targetRotation = Quaternion.LookRotation(dir); // Causes rotation such that it points at window
 
-        angle = transform.rotation.eulerAngles.x; 
+        angle = targetRotation.eulerAngles.x;
         launchAngleMin = angle;
         ShootPosition.rotation = targetRotation;
 
         go = Instantiate(Ball, ShootPosition.position, ShootPosition.rotation, ShootPosition.root);
-        go.GetComponent<Ball>().SetTarget(currTarget);
+        go.GetComponent<Ball>().SetTarget();
         travelling = true;
         canShoot = false;
 
-        switch (currTarget)
-        {
-            case 0:
-                iterations1++;
-                break;
-            case 1:
-                iterations2++;
-                break;
-            default:
-                break;
-        }
+        iterations1++;
     }
 }

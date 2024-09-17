@@ -35,12 +35,14 @@ public class SettingsMenu : MonoBehaviour
     public TMP_Text CalculationDensValueText, SimSpeedValueText, MaxIterationsValueText, WindSpeedValueText;
 
     private float drag = 0.47f;
-    private int MaxIterations = 10;
-    private int InitVel = 70;
+    private int MaxIterations = 90;
+    private int InitVel = 10;
+    private float mass = 300f;
     private float windSpeed = 0f;
     private Vector3 windDirection = new Vector3(-1, 0, 0);
     public Slider AccuracyLimitSlider;
     public float LowestAccuracy = 100f, HighestAccuracy = 0f;
+    public TMP_Text maxVel;
 
     public Camera freeCam;
 
@@ -313,9 +315,29 @@ public class SettingsMenu : MonoBehaviour
     {
         return MaxIterations;
     }
+
+    public void SetBottle()
+    {
+        mass = 300f;
+        maxVel.text = 19.3f.ToSafeString();
+        InitialVelocitySlider.maxValue = 19.3f;
+    }
+
+    public void SetPlant()
+    {
+        mass = 4000f;
+        maxVel.text = 8.14f.ToSafeString();
+        InitialVelocitySlider.maxValue = 8.14f;
+    }
+
     public float GetDragCoefficient() 
     {
         return  drag;
+    }
+
+    public float GetMass()
+    {
+        return mass;
     }
 
     public int GetInitVel()
