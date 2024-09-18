@@ -9,7 +9,7 @@ public class Ball : MonoBehaviour
     public bool islaunched;
 
     public float density = 7750f; //kg/m^3
-    public float dragCoefficient = 0.1f;
+    public float dragCoefficient = 0.5f;
     public float volume = 0;
     public float initialVel = 70f; // m/s
     private float force;
