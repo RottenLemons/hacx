@@ -62,8 +62,10 @@ public class CalcTrajectory : MonoBehaviour
             if (!CheckIsTravelling(ViableCulprits1))
             {
                 SetCanShoot(ViableCulprits1);
-                currIter1++;
-                iter1.text = "Iterations: " + currIter1;
+                if (currIter1 < SettingsMenu.instance.GetMaxIterations()) {
+                    currIter1++;
+                    iter1.text = "Iterations: " + currIter1;
+                }
             }
         }
 

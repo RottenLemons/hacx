@@ -3186,7 +3186,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.47, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -15083,7 +15083,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -19395,8 +19395,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0f012a54402d0ab46a85b24dae2463c6, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 0f012a54402d0ab46a85b24dae2463c6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5d98431578b97624d81d9a1639b27056, type: 2}
+  m_sharedMaterial: {fileID: 8826890524401594820, guid: 5d98431578b97624d81d9a1639b27056, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -23993,7 +23993,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 479, y: 425}
+  m_AnchoredPosition: {x: 564, y: 425}
   m_SizeDelta: {x: 933.3033, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &707139351
@@ -31348,7 +31348,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 461.1011, y: -39.07005}
+  m_AnchoredPosition: {x: 616.6516, y: -39.07005}
   m_SizeDelta: {x: 300, y: 78.1401}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &904642938
@@ -34716,7 +34716,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4787422746501831965, guid: f73074fa56582654f81f2a43ace0d3ff, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -8.17
+      value: -8.67
       objectReference: {fileID: 0}
     - target: {fileID: 4787422746501831965, guid: f73074fa56582654f81f2a43ace0d3ff, type: 3}
       propertyPath: m_LocalRotation.w
@@ -35721,7 +35721,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1029356009
 RectTransform:
   m_ObjectHideFlags: 0
@@ -58613,7 +58613,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 129.27, y: 128.5}
+  m_AnchoredPosition: {x: 129.27, y: 139}
   m_SizeDelta: {x: 257.5734, y: 189.8788}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1707781631
@@ -58638,8 +58638,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "       KILLER\n                LITTER\n\n\n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0f012a54402d0ab46a85b24dae2463c6, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 0f012a54402d0ab46a85b24dae2463c6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5d98431578b97624d81d9a1639b27056, type: 2}
+  m_sharedMaterial: {fileID: 8826890524401594820, guid: 5d98431578b97624d81d9a1639b27056, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -60833,7 +60833,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1964588771}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 10
+  m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
@@ -61707,6 +61707,7 @@ MonoBehaviour:
   ChangeWindowDisplay: {fileID: 1736631090}
   WindowDisplayOption: 0
   DisplayingCulpritText: {fileID: 1029752951}
+  maxWidth: {fileID: 398274344}
   ToggleHeatMap: {fileID: 538960519}
   ToggleAccuracy: {fileID: 1208360416}
   PostResultsUIGO: {fileID: 83273792}

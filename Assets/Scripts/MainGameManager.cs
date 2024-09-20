@@ -55,7 +55,7 @@ public class MainGameManager : MonoBehaviour
     [Header("UI Related")]
     public UnityEngine.UI.Button ChangeWindowDisplay;
     public int WindowDisplayOption = 2;
-    public TMP_Text DisplayingCulpritText;
+    public TMP_Text DisplayingCulpritText, maxWidth;
     public UnityEngine.UI.Toggle ToggleHeatMap, ToggleAccuracy;
     public GameObject PostResultsUIGO;
 
@@ -185,6 +185,8 @@ public class MainGameManager : MonoBehaviour
         {
             // Update Slider if the Input Field value is valid
             heightS.value = newValue;
+            widthS.maxValue = newValue;
+            maxWidth.text = String.Format("{0:0.0}", newValue);
             posPicker.transform.localScale = new Vector3(posPicker.transform.localScale.x, newValue, posPicker.transform.localScale.z);
 
         }
@@ -215,6 +217,8 @@ public class MainGameManager : MonoBehaviour
     public void OnChangeHeightSlider()
     {
         heightT.text = heightS.value.ToString();
+        widthS.maxValue = heightS.value;
+        maxWidth.text = String.Format("{0:0.0}", heightS.value);
         posPicker.transform.localScale = new Vector3(posPicker.transform.localScale.x, heightS.value, posPicker.transform.localScale.z);
     }
 

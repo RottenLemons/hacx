@@ -265,7 +265,8 @@ public class SettingsMenu : MonoBehaviour
         }
         else
         {
-          
+            Debug.Log(LowestAccuracy);
+            Debug.Log(HighestAccuracy);
             foreach (HitBall A in MainGameManager.instance.RegisteredHitsOnBothWindows)
             {
                 GameObject B = A.RelatedHumanGameObject;
