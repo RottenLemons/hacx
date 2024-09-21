@@ -201,7 +201,7 @@ public class SettingsMenu : MonoBehaviour
     }
     public void ReaccurateAndReHM()
     {
-        foreach(HitBall HB in MainGameManager.instance.RegisteredHitsOnBothWindows)
+        foreach(HitBall HB in MainGameManager.instance.RegisteredHits)
         {
             HB.CalculateAccuracy();
         }
@@ -249,6 +249,8 @@ public class SettingsMenu : MonoBehaviour
             if (HighestAccuracy < Acc && Acc != 0)
             {
                 HighestAccuracy = Acc;
+                MainGameManager.instance.highestAcc.text = "Most likely culprit at Row: " + A.RelatedHumanGameObject.GetComponent<Culprit>().row + ", Col:" + A.RelatedHumanGameObject.GetComponent<Culprit>().column + " has Acc of " + A.Accuracy.ToString("F1") + "%";
+
             }
         }
     }

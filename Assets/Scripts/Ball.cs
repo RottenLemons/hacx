@@ -132,6 +132,7 @@ public class Ball : MonoBehaviour
         {
             shooter.travelling = false;
             rbody.isKinematic = true;
+
         }
         else
         {
@@ -145,8 +146,22 @@ public class Ball : MonoBehaviour
 
 
             shooter.hitWindow1 = true;
+
+            Vector3 normal = other.contacts[0].normal;
+            HitBall HB = new HitBall();
+            HB.RelatedHumanGameObject = transform.parent.gameObject;
+            HB.WindowHit = target;
+            HB.DistanceFromCenterW1 = Vector3.Distance(transform.position, MainGameManager.instance.posPicker.transform.position);
+            shooter.angle1 = Vector3.Angle(vel, -normal);
+            shooter.angles = Quaternion.LookRotation(vel).eulerAngles;
+            shooter.hitSpeed1 = vel.magnitude;
+
+            HB.CalculateAccuracy();
+            HB.Hitposition = transform.position;
+            MainGameManager.instance.AddNewHitRegistryToList(HB);
+            MainGameManager.instance.RegisteredHitsPeople.Add(shooter.gameObject);
         }
-        if (final) {
+       /* if (final) {
             //Debug.Log("HIT TARGET: " + target);
             Vector3 normal = other.contacts[0].normal;
             HitBall HB = new HitBall();
@@ -160,8 +175,9 @@ public class Ball : MonoBehaviour
             HB.CalculateAccuracy();
             HB.Hitposition = transform.position;
             MainGameManager.instance.AddNewHitRegistryToList(HB);
+            MainGameManager.instance.RegisteredHitsPeople.Add(shooter.gameObject);
         }
-
+*/
 
         if (target == 0 && (shooter.iterations1 < shooter.maxIterations))
             return;

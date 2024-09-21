@@ -27373,7 +27373,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Translucent Objs
+  m_text: Show Impossible
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -62088,7 +62088,7 @@ MonoBehaviour:
   CulpritPositions: []
   SpawnedCulprits: []
   RegisteredHits: []
-  RegisteredHitsOnBothWindows: []
+  RegisteredHitsPeople: []
   ChangeWindowDisplay: {fileID: 1736631090}
   WindowDisplayOption: 0
   DisplayingCulpritText: {fileID: 1029752951}

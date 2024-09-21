@@ -98,7 +98,7 @@ public class CalcTrajectory : MonoBehaviour
             Culprit curr = culprits[i].GetComponent<Culprit>();
 
 
-            if(!curr.fDone)
+            if(!curr.done)
             {
                 return false;
             }

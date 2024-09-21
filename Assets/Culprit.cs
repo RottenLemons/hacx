@@ -71,27 +71,30 @@ public class Culprit : MonoBehaviour
             return;
         }
 
-        if (done && go.GetComponent<Rigidbody>().isKinematic)
+/*        if (done && go.GetComponent<Rigidbody>().isKinematic)
         {
             travelling = false;
             fDone = true;
             return;
-        }
+        }*/
 
 
         if (iterations1 >= maxIterations)
         {
             done = true;
+            go.gameObject.SetActive(false);
+            gameObject.SetActive(!gameObject.activeSelf);
+            
 
-            Quaternion tiltRotation = Quaternion.Euler(angle, 0, 0);
-            Quaternion finalRotation = targetRotation * tiltRotation;
-            ShootPosition.rotation = finalRotation;
-            Destroy(go);
-            go = Instantiate(Ball, ShootPosition.position, ShootPosition.rotation, ShootPosition.root);
-            go.GetComponent<Ball>().SetTarget();
-            /*go.GetComponent<Ball>().final = true;*/
-            travelling = true;
-            canShoot = false;
+            /*            Quaternion tiltRotation = Quaternion.Euler(angle, 0, 0);
+                        Quaternion finalRotation = targetRotation * tiltRotation;
+                        ShootPosition.rotation = finalRotation;
+                        Destroy(go);
+                        go = Instantiate(Ball, ShootPosition.position, ShootPosition.rotation, ShootPosition.root);
+                        go.GetComponent<Ball>().SetTarget();
+                        go.GetComponent<Ball>().final = true;
+                        travelling = true;
+                        canShoot = false;*/
             return;
         }
 
@@ -99,7 +102,7 @@ public class Culprit : MonoBehaviour
         if (hitWindow1)
         {
             done = true;
-            angle = launchAngle;
+/*            angle = launchAngle;
 
             Quaternion tiltRotation = Quaternion.Euler(angle, 0, 0);
             Quaternion finalRotation = targetRotation * tiltRotation;
@@ -109,7 +112,7 @@ public class Culprit : MonoBehaviour
             go.GetComponent<Ball>().SetTarget();
             go.GetComponent<Ball>().final = true;
             travelling = true;
-            canShoot = false;
+            canShoot = false;*/
             return;
 
         }

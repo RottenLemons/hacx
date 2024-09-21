@@ -50,7 +50,7 @@ public class MainGameManager : MonoBehaviour
 
     [Header("Hits")]
     public List<HitBall> RegisteredHits = new List<HitBall>();
-    public List<HitBall> RegisteredHitsOnBothWindows = new List<HitBall>();
+    public List<GameObject> RegisteredHitsPeople = new List<GameObject>();
 
     [Header("UI Related")]
     public UnityEngine.UI.Button ChangeWindowDisplay;
@@ -87,14 +87,10 @@ public class MainGameManager : MonoBehaviour
             GO.transform.Find("Model").GetComponent<SkinnedMeshRenderer>().material.color = Color.red;
             GO.GetComponent<Culprit>().Cleanup();
         }
-        Window[] Windows = GameObject.FindObjectsOfType<Window>();
-        foreach (Window GO in Windows)
-        {
-            GO.gameObject.GetComponent<MeshRenderer>().material.color = OriginalWindowMaterial.color;
-        }
+
         SelectedWindows.Clear();
         RegisteredHits.Clear();
-        RegisteredHitsOnBothWindows.Clear();
+        RegisteredHitsPeople.Clear();
         SimButton.SetActive(false);
         SettingsMenu.instance.CleanUp();
         CT.CleanUp();
@@ -104,17 +100,23 @@ public class MainGameManager : MonoBehaviour
         posPicker.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
         // Start the next game
         StartGame();
-        ResetWholeScene();
-    }
+/*        ResetWholeScene();
+*/    }
 
     // This function inverts the current state of the buildings
     public void ToggleItemTransparency()
     {
-        foreach(GameObject GO in GameObjectsTobeDisabled)
+        foreach (GameObject GO in SpawnedCulprits)
         {
-            GO.SetActive(isToggled);
+            if (RegisteredHitsPeople.Contains(GO))
+            {
+                GO.SetActive(false);
+                return;
+            }
+            GO.SetActive(true);
+            GO.transform.Find("Model").GetComponent<SkinnedMeshRenderer>().material.color = Color.red;
+            GO.GetComponent<Culprit>().Cleanup();
         }
-        isToggled = !isToggled;
     }
     
     // This function makes all the current buildings not transparent
@@ -381,7 +383,7 @@ public class MainGameManager : MonoBehaviour
         }
     }
 
-    public void ToggleCulpritDisplays()
+ /*   public void ToggleCulpritDisplays()
     {
         WindowDisplayOption++;
         if (WindowDisplayOption > 2) WindowDisplayOption = 0;
@@ -472,7 +474,7 @@ public class MainGameManager : MonoBehaviour
                     B.RelatedHumanGameObject.SetActive(true);
             }
         }
-    }
+    }*/
 
     public void RemoveAllCulpritsThatMissed()
     {
@@ -489,7 +491,7 @@ public class MainGameManager : MonoBehaviour
         }
     }
 
-    public void SortDuplicateHits()
+/*    public void SortDuplicateHits()
     {
         Vector2 MinMaxSpeed1 = Vector2.zero;
         Vector2 MinMaxSpeed2 = Vector2.zero;
@@ -535,7 +537,7 @@ public class MainGameManager : MonoBehaviour
         //Debug.Log("window1 min max: " + MinMaxSpeed1);
         //Debug.Log("window2 min max: " + MinMaxSpeed2);
     }
-
+*/
     public void EnableFreeCam()
     {
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
