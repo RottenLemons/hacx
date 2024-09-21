@@ -125,17 +125,6 @@ public class Ball : MonoBehaviour
 
     }
 
-    float AngleWithPlane(Vector3 vector, Vector3 planeNormal)
-    {
-        // Calculate the dot product
-        float dotProduct = Vector3.Dot(vector.normalized, planeNormal);
-
-        // Calculate the angle in radians and then convert to degrees
-        float angle = Mathf.Acos(dotProduct) * Mathf.Rad2Deg;
-
-        return angle;
-    }
-
     private void OnCollisionEnter(Collision other)
     {
         Culprit shooter = transform.root.GetComponent<Culprit>();
@@ -147,7 +136,6 @@ public class Ball : MonoBehaviour
         else
         {
             //Vector3 vel = rbody.velocity;
-           
             shooter.travelling = false;
             rbody.isKinematic = true;
             transform.position = other.contacts[0].point;

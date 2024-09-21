@@ -68,8 +68,7 @@ public class Culprit : MonoBehaviour
     {
         if (fDone || !canShoot)
         {
-/*            Debug.Log("a");
-*/            return;
+            return;
         }
 
         if (done && go.GetComponent<Rigidbody>().isKinematic)
@@ -90,7 +89,7 @@ public class Culprit : MonoBehaviour
             Destroy(go);
             go = Instantiate(Ball, ShootPosition.position, ShootPosition.rotation, ShootPosition.root);
             go.GetComponent<Ball>().SetTarget();
-            go.GetComponent<Ball>().final = true;
+            /*go.GetComponent<Ball>().final = true;*/
             travelling = true;
             canShoot = false;
             return;
@@ -134,7 +133,6 @@ public class Culprit : MonoBehaviour
             }
           
             angle = (launchAngleMin + launchAngleMax) * 0.5f;*/
-            //Debug.Log(angle + " " + launchAngleMin + " " + launchAngleMax);
             if (iterations1 > 0)
             {
                 if (Vector3.Distance(go.transform.position, MainGameManager.instance.posPicker.transform.position) < dist)

@@ -115,7 +115,7 @@ public class SettingsMenu : MonoBehaviour
         {
             Culprit C = B.GetComponent<Culprit>();
             float accuracy = ScaleValue(float.Parse(C.AccuracyText.text), LowestAccuracy, HighestAccuracy);
-            if (accuracy > AccuracyLimitSlider.value && C.hitWindow1 && C.hitWindow2) B.SetActive(true);
+            if (accuracy > AccuracyLimitSlider.value) B.SetActive(true);
             else B.SetActive(false);
         }
     }
@@ -237,7 +237,7 @@ public class SettingsMenu : MonoBehaviour
     {
         LowestAccuracy = 100;
         HighestAccuracy = 0;
-        foreach (HitBall A in MainGameManager.instance.RegisteredHitsOnBothWindows)
+        foreach (HitBall A in MainGameManager.instance.RegisteredHits)
         {
             GameObject B = A.RelatedHumanGameObject;
             Culprit C = B.GetComponent<Culprit>();
@@ -265,9 +265,8 @@ public class SettingsMenu : MonoBehaviour
         }
         else
         {
-            Debug.Log(LowestAccuracy);
-            Debug.Log(HighestAccuracy);
-            foreach (HitBall A in MainGameManager.instance.RegisteredHitsOnBothWindows)
+
+            foreach (HitBall A in MainGameManager.instance.RegisteredHits)
             {
                 GameObject B = A.RelatedHumanGameObject;
                 Culprit C = B.GetComponent<Culprit>();

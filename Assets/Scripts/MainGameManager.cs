@@ -564,7 +564,6 @@ public class HitBall
         float height = shooter.hitSpeed1 * (float)Math.Cos(90 - shooter.angles.x) * 0.2f + shooter.hitSpeed1 * (float)Math.Sin(90 - shooter.angles.x) * 0.2f;
         float angle = 180 - shooter.angles.y;
         Accuracy = 5 / Mathf.Max(0.2f, DistanceFromCenterW1 / 5) + 5 / Math.Max(0.2f, Math.Abs(width - MainGameManager.instance.posPicker.transform.localScale.z) / 5) + 5 / Math.Max(0.2f, Math.Abs(height - MainGameManager.instance.posPicker.transform.localScale.x) / 5) + 2.5f / Math.Max(0.1f, Math.Abs(angle - MainGameManager.instance.posPicker.transform.rotation.z) / 5);
-        Debug.Log(Accuracy);
         /*}
         else if(WindowHit == 1)
         {
