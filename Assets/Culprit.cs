@@ -66,7 +66,7 @@ public class Culprit : MonoBehaviour
 
     private void Update()
     {
-        if (fDone || !canShoot)
+        if (done || !canShoot)
         {
             return;
         }
@@ -83,7 +83,7 @@ public class Culprit : MonoBehaviour
         {
             done = true;
             go.gameObject.SetActive(false);
-            gameObject.SetActive(!gameObject.activeSelf);
+            gameObject.SetActive(false);
             
 
             /*            Quaternion tiltRotation = Quaternion.Euler(angle, 0, 0);

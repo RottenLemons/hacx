@@ -66,6 +66,7 @@ public class MainGameManager : MonoBehaviour
     public TMP_Text highestAcc;
     private bool choosing = false;
     public GameObject posPicker;
+    private bool toggle = false;
 
     public WeightSettingsManager WSM;
 
@@ -110,13 +111,14 @@ public class MainGameManager : MonoBehaviour
         {
             if (RegisteredHitsPeople.Contains(GO))
             {
-                GO.SetActive(false);
-                return;
+                GO.gameObject.SetActive(toggle);
+                continue;
             }
-            GO.SetActive(true);
-            GO.transform.Find("Model").GetComponent<SkinnedMeshRenderer>().material.color = Color.red;
-            GO.GetComponent<Culprit>().Cleanup();
+            Debug.Log(GO.gameObject.ToString());
+            GO.gameObject.SetActive(!toggle);
         }
+
+        toggle = !toggle;
     }
     
     // This function makes all the current buildings not transparent
@@ -153,6 +155,7 @@ public class MainGameManager : MonoBehaviour
             {
                 GameObject duplicatedObject = Instantiate(spawnArea);
                 duplicatedObject.transform.position += i * new Vector3(0, 3.6f, 0);
+                duplicatedObject.GetComponent<AreaSplitManager>().row = i + 1;
             }
         }
         else

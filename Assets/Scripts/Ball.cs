@@ -38,11 +38,11 @@ public class Ball : MonoBehaviour
         rbody = GetComponent<Rigidbody>();
         //distToGround = GetComponent<SphereCollider>().bounds.extents.y;
 
-        dragCoefficient = SettingsMenu.instance.GetDragCoefficient();
-        // get drag coefficient 
+/*        dragCoefficient = SettingsMenu.instance.GetDragCoefficient();
+*/        // get drag coefficient 
 
         r = transform.localScale.y * 0.5f;
-        volume = (4 * Mathf.PI * r * r * r) / 3;
+/*        volume = (4 * Mathf.PI * r * r * r) / 3;*/
         rbody.mass = SettingsMenu.instance.GetMass(); // in grams
        
         area = Mathf.PI * r * r;

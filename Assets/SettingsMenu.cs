@@ -10,6 +10,7 @@ public class SettingsMenu : MonoBehaviour
     public static SettingsMenu instance; 
     public Slider CalculationDensitySlider;
     public Slider DragCoefficientSlider;
+    public Slider HeightSlider;
     public Slider InitialVelocitySlider;
     public Slider SimulationSpeedSlider;
     public Slider MaxIterationsSlider;
@@ -31,10 +32,10 @@ public class SettingsMenu : MonoBehaviour
     public List<GameObject> SettingsWindows = new List<GameObject>();
 
     [Header("SliderValues")]
-    public TMP_Text DragCoeffecientValueText, InitialVelocityValueText;
+    public TMP_Text DragCoeffecientValueText, HeightValueText, InitialVelocityValueText;
     public TMP_Text CalculationDensValueText, SimSpeedValueText, MaxIterationsValueText, WindSpeedValueText;
 
-    private float drag = 0.47f;
+    private float area = 0.5f;
     private int MaxIterations = 90;
     private int InitVel = 10;
     private float mass = 300f;
@@ -58,6 +59,7 @@ public class SettingsMenu : MonoBehaviour
     public Slider BuildingDistanceslider;
     public Transform TargetBuilding;
     public TMP_Text CurrentDistanceText;
+    public float height = 0.2f;
 
     public void OnEditBuildingDistance()
     {
@@ -158,6 +160,7 @@ public class SettingsMenu : MonoBehaviour
         CalculationDensValueText.text = ((int)CalculationDensitySlider.value).ToString();
         InitialVelocityValueText.text = ((int)InitialVelocitySlider.value).ToString();
         DragCoeffecientValueText.text = DragCoefficientSlider.value.ToString("F2");
+        HeightValueText.text = HeightSlider.value.ToString("F2");
         SimSpeedValueText.text = SimulationSpeedSlider.value.ToString("F1");
         MaxIterationsValueText.text = ((int)MaxIterationsSlider.value).ToString();
         WindSpeedValueText.text = WindSpeedSlider.value.ToString("F2") + "m/s";
@@ -287,7 +290,14 @@ public class SettingsMenu : MonoBehaviour
     }
     public void OnDragChange()
     {
-        drag = DragCoefficientSlider.value;
+        area = DragCoefficientSlider.value * DragCoefficientSlider.value * Mathf.PI;
+        
+        ChangeAllSliderValueTexts();
+    }
+
+    public void OnHeightChange()
+    {
+        height = DragCoefficientSlider.value;
         ChangeAllSliderValueTexts();
     }
 
@@ -323,6 +333,11 @@ public class SettingsMenu : MonoBehaviour
         mass = 300f;
         maxVel.text = 19.3f.ToSafeString();
         InitialVelocitySlider.maxValue = 19.3f;
+        height = 0.22f;
+        HeightSlider.value = height;
+        area = 0.03f * 0.03f * Mathf.PI;
+        DragCoefficientSlider.value = 0.03f;
+        ChangeAllSliderValueTexts();
     }
 
     public void SetPlant()
@@ -330,11 +345,16 @@ public class SettingsMenu : MonoBehaviour
         mass = 4000f;
         maxVel.text = 8.14f.ToSafeString();
         InitialVelocitySlider.maxValue = 8.14f;
+        height = 0.385f;
+        HeightSlider.value = height;
+        area = 0.1f * 0.1f * Mathf.PI;
+        DragCoefficientSlider.value = 0.1f;
+        ChangeAllSliderValueTexts();
     }
 
-    public float GetDragCoefficient() 
+    public float GetArea() 
     {
-        return  drag;
+        return  area;
     }
 
     public float GetMass()
