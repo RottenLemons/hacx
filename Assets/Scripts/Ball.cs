@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,12 +25,36 @@ public class Ball : MonoBehaviour
     Vector3 vel;
     public bool final = false;
 
-/*    public void Setup(float velocity, float mass, float dragCoefficient)
+    /*    public void Setup(float velocity, float mass, float dragCoefficient)
+        {
+            this.initialVel = velocity;
+            this.mass = mass;
+            this.dragCoefficient = dragCoefficient;
+        }*/
+
+    float getDragCoefficient(bool useShorterCoefficientEquation = false)
     {
-        this.initialVel = velocity;
-        this.mass = mass;
-        this.dragCoefficient = dragCoefficient;
-    }*/
+        float characteristic_length = SettingsMenu.instance.height;
+        float kinematic_viscosity = 1.48E-5f;  //m2/s
+
+        float re = rbody.velocity.normalized.magnitude * characteristic_length / kinematic_viscosity;
+
+        if (useShorterCoefficientEquation) return (float) ( (24 / re) * Math.Pow(1 + 0.27 * re, 0.43) + 0.47 * (1 - Math.Exp(-0.04 * Math.Pow(re, 0.38))));
+
+        return (float) (8 * 10E-6 * (Math.Pow(re / 6530, 2) + Math.Tanh(re) - 8 * Mathf.Log(re) / Mathf.Log(10))
+                - 0.4119 * Math.Exp(-2.08E43 / Math.Pow(re + Math.Pow(re, 2), 4))
+                - 2.1344 * Math.Exp((-Math.Pow(Math.Log(Math.Pow(re, 2) + 10.7563) / Math.Log(10), 2) + 9.9867)/re)
+                + 0.1357 * Math.Exp(-(Math.Pow(re / 1620, 2) + 10370) / re)
+                - ((8.5E-3 * (2 * Math.Log(Math.Tanh(Math.Tanh(re))) / Math.Log(10) - 2825.7162)) / re) + 2.4795);
+    }
+
+    Vector3 getDragForce(float dragCoefficient)
+    {
+        Debug.Log(dragCoefficient);
+        return -0.5f * (p * rbody.velocity.sqrMagnitude * dragCoefficient * SettingsMenu.instance.GetArea() * rbody.velocity.normalized);
+        // original code: idk why they multiply by velocity again at the end; please investigate
+        // Vector3 dragForce = -0.5f * (p * rbody.velocity.sqrMagnitude * dragCoefficient * area * rbody.velocity.normalized);
+    }
 
     void Awake()
     {
@@ -95,11 +120,11 @@ public class Ball : MonoBehaviour
         //var forceAmount = (p * velocity * velocity * dragCoefficient * area) * 0.5f;
         //rbody.AddForce(direction * forceAmount);
 
+            
 
-
-        Vector3 dragForce = -0.5f * (p * rbody.velocity.sqrMagnitude * dragCoefficient * area * rbody.velocity.normalized);
-        // WEE ZEN CHANGE THIS BASED ON RESEARCH
-        rbody.AddForce(dragForce, ForceMode.Force);
+/*        Vector3 dragForce = -0.5f * (p * rbody.velocity.sqrMagnitude * dragCoefficient * area * rbody.velocity.normalized);
+*/        // WEE ZEN CHANGE THIS BASED ON RESEARCH
+        rbody.AddForce(getDragForce(getDragCoefficient(true)), ForceMode.Force);
 
         // Calculate the relative velocity of the ball with respect to the wind
         //Vector3 relativeVelocity = rbody.velocity - SettingsMenu.instance.GetWindDirection() * SettingsMenu.instance.GetWindSpeed();
