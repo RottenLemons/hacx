@@ -120,12 +120,13 @@ public class Ball : MonoBehaviour
         //var forceAmount = (p * velocity * velocity * dragCoefficient * area) * 0.5f;
         //rbody.AddForce(direction * forceAmount);
 
-            
 
-/*        Vector3 dragForce = -0.5f * (p * rbody.velocity.sqrMagnitude * dragCoefficient * area * rbody.velocity.normalized);
-*/        // WEE ZEN CHANGE THIS BASED ON RESEARCH
-        rbody.AddForce(getDragForce(getDragCoefficient(true)), ForceMode.Force);
 
+        Vector3 dragForce = -0.5f * (p * rbody.velocity.sqrMagnitude * dragCoefficient * area * rbody.velocity.normalized);
+        rbody.AddForce(dragForce, ForceMode.Force);
+        // WEE ZEN CHANGE THIS BASED ON RESEARCH
+        /*        rbody.AddForce(getDragForce(getDragCoefficient(true)), ForceMode.Force);
+        */
         // Calculate the relative velocity of the ball with respect to the wind
         //Vector3 relativeVelocity = rbody.velocity - SettingsMenu.instance.GetWindDirection() * SettingsMenu.instance.GetWindSpeed();
         //Vector3 dragForce = -0.5f * p * dragCoefficient * area * relativeVelocity.sqrMagnitude * relativeVelocity.normalized;
@@ -153,7 +154,8 @@ public class Ball : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
         Culprit shooter = transform.root.GetComponent<Culprit>();
-        if (other.transform.gameObject != MainGameManager.instance.posPicker.transform.gameObject)
+
+        if (other.transform.gameObject.ToString() != MainGameManager.instance.posPicker.transform.gameObject.ToString())
         {
             shooter.travelling = false;
             rbody.isKinematic = true;
@@ -166,8 +168,8 @@ public class Ball : MonoBehaviour
             rbody.isKinematic = true;
             transform.position = other.contacts[0].point;
 
-            if (Vector3.Distance(other.contacts[0].point, other.transform.position) > 0.2f)
-                return;
+/*            if (Vector3.Distance(other.contacts[0].point, other.transform.position) > 0.2f)
+                return;*/
 
 
             shooter.hitWindow1 = true;
